@@ -1,0 +1,27 @@
+Source: emudbg
+Priority: optional
+Maintainer: Damien Ciabrini <damien.ciabrini@gmail.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.1.2
+Section: libs
+Homepage: https://github.com/dciabrin/emudbg
+Vcs-Git: https://github.com/dciabrin/emudbg.git
+
+Package: emudbg-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: emudbg (= ${binary:Version}), ${misc:Depends}
+Description: emulator-agnostic source-level debugging API
+ emudbg defines a simple debugging API that can be implemented by
+ emulators to expose simple step-by-step execution and memory
+ inspection capabilities over a standard GDB remote serial protocol
+
+Package: emudbg
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: emulator-agnostic source-level debugging API
+ emudbg defines a simple debugging API that can be implemented by
+ emulators to expose simple step-by-step execution and memory
+ inspection capabilities over a standard GDB remote serial protocol
