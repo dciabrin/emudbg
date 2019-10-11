@@ -1,7 +1,7 @@
 Source: emudbg
 Priority: optional
 Maintainer: Damien Ciabrini <damien.ciabrini@gmail.com>
-Build-Depends: debhelper (>= 10)
+Build-Depends: debhelper (>= 10), pkg-config
 Standards-Version: 4.1.2
 Section: libs
 Homepage: https://github.com/dciabrin/emudbg
