@@ -15,5 +15,5 @@ git archive --format=tar --prefix=${PROJECT}-${DEB_VERSION}/ master | gzip -c > 
 tar xf ${PROJECT}_${DEB_VERSION}.orig.tar.gz
 cd ${PROJECT}-${DEB_VERSION}
 cp -a ../debian .
-mk-build-deps --install --remove
+yes | mk-build-deps --install --remove
 dpkg-buildpackage -rfakeroot -us -uc
