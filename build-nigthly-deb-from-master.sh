@@ -2,8 +2,17 @@
 
 set -ex
 
-export DEBFULLNAME="bot"
-export DEBEMAIL="bot@address.local"
+# Use defaults if not provided in environment
+: ${DEBFULLNAME:=bot}
+: ${DEBEMAIL:=bot@address.local}
+: ${SIGN_FLAGS:=-us -uc}
+
+export DEBFULLNAME DEBEMAIL
+
+if [ -f "${PUBKEY_FILE}" ]; then
+    chmod 700 $HOME/.gnupg
+    gpg --import ${PUBKEY_FILE}
+fi
 
 PROJECT=$(basename $(pwd))
 UPSTREAM_VERSION=$(git grep AC_INIT master:configure.ac | sed -ne 's/.*\[\(.*\)\].*/\1/p')
@@ -16,4 +25,4 @@ tar xf ${PROJECT}_${DEB_VERSION}.orig.tar.gz
 cd ${PROJECT}-${DEB_VERSION}
 cp -a ../debian .
 yes | mk-build-deps --install --remove
-dpkg-buildpackage -rfakeroot -us -uc
+dpkg-buildpackage -rfakeroot ${SIGN_FLAGS}
