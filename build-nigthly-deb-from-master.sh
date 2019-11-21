@@ -6,6 +6,7 @@ set -ex
 : ${DEBFULLNAME:=bot}
 : ${DEBEMAIL:=bot@address.local}
 : ${SIGN_FLAGS:=-us -uc}
+: ${DISTRIB:=UNRELEASED}
 
 export DEBFULLNAME DEBEMAIL
 
@@ -19,7 +20,7 @@ UPSTREAM_VERSION=$(git grep AC_INIT master:configure.ac | sed -ne 's/.*\[\(.*\)\
 read DATE SHORTHASH LONGHASH <<<$(git log -1 --date=format:"%Y%m%d%H%M" --pretty=format:"%cd %h %H" master)
 DEB_VERSION=${UPSTREAM_VERSION}~${DATE}.${SHORTHASH}
 
-dch -v ${DEB_VERSION}-1 -U "Nightly build from tag ${LONGHASH}"
+dch -D ${DISTRIB} -v ${DEB_VERSION}-1 -U "Nightly build from tag ${LONGHASH}"
 git archive --format=tar --prefix=${PROJECT}-${DEB_VERSION}/ master | gzip -c > ${PROJECT}_${DEB_VERSION}.orig.tar.gz
 tar xf ${PROJECT}_${DEB_VERSION}.orig.tar.gz
 cd ${PROJECT}-${DEB_VERSION}
