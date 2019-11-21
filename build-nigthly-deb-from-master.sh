@@ -7,6 +7,7 @@ set -ex
 : ${DEBEMAIL:=bot@address.local}
 : ${SIGN_FLAGS:=-us -uc}
 : ${DISTRIB:=UNRELEASED}
+: ${BUILD_OPTS:=-F}
 
 export DEBFULLNAME DEBEMAIL
 
@@ -26,4 +27,4 @@ tar xf ${PROJECT}_${DEB_VERSION}.orig.tar.gz
 cd ${PROJECT}-${DEB_VERSION}
 cp -a ../debian .
 yes | mk-build-deps --install --remove
-dpkg-buildpackage -rfakeroot ${SIGN_FLAGS}
+dpkg-buildpackage -rfakeroot ${BUILD_OPTS} ${SIGN_FLAGS}
