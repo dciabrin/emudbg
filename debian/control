@@ -9,7 +9,7 @@ Vcs-Git: https://github.com/dciabrin/emudbg.git
 
 Package: emudbg-dev
 Section: libdevel
-Architecture: any
+Architecture: amd64
 Multi-Arch: same
 Depends: emudbg (= ${binary:Version}), ${misc:Depends}
 Description: emulator-agnostic source-level debugging API
@@ -18,7 +18,7 @@ Description: emulator-agnostic source-level debugging API
  inspection capabilities over a standard GDB remote serial protocol
 
 Package: emudbg
-Architecture: any
+Architecture: amd64
 Multi-Arch: same
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: emulator-agnostic source-level debugging API
