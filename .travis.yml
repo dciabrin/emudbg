@@ -1,0 +1,7 @@
+language: c
+matrix:
+  include:
+    # works on Precise and Trusty
+    - os: linux
+      dist: bionic
+script: autoreconf -iv && ./configure && make && make install
