@@ -19,12 +19,15 @@ fi
 PROJECT=$(basename $(pwd))
 UPSTREAM_VERSION=$(git grep AC_INIT master:configure.ac | sed -ne 's/.*\[\(.*\)\].*/\1/p')
 read DATE SHORTHASH LONGHASH <<<$(git log -1 --date=format:"%Y%m%d%H%M" --pretty=format:"%cd %h %H" master)
-DEB_VERSION=${UPSTREAM_VERSION}~${DATE}.${SHORTHASH}
+UPSTREAM_HASH=${DATE}.${SHORTHASH}
+TARBALL_VERSION=${UPSTREAM_VERSION}~${UPSTREAM_HASH}
+BUILD_INFO=${DISTRIB}.1
+DEB_VERSION=${TARBALL_VERSION}-${BUILD_INFO}
 
-dch -D ${DISTRIB} -v ${DEB_VERSION}-1 -U "Nightly build from tag ${LONGHASH}"
-git archive --format=tar --prefix=${PROJECT}-${DEB_VERSION}/ master | gzip -c > ${PROJECT}_${DEB_VERSION}.orig.tar.gz
-tar xf ${PROJECT}_${DEB_VERSION}.orig.tar.gz
-cd ${PROJECT}-${DEB_VERSION}
+dch -D ${DISTRIB} -v ${DEB_VERSION} -U "Nightly build from tag ${LONGHASH}"
+git archive --format=tar --prefix=${PROJECT}-${TARBALL_VERSION}/ master | gzip -c > ${PROJECT}_${TARBALL_VERSION}.orig.tar.gz
+tar xf ${PROJECT}_${TARBALL_VERSION}.orig.tar.gz
+cd ${PROJECT}-${TARBALL_VERSION}
 cp -a ../debian .
 yes | mk-build-deps --install --remove
 dpkg-buildpackage -rfakeroot ${BUILD_OPTS} ${SIGN_FLAGS}
