@@ -4,4 +4,11 @@ matrix:
     # works on Precise and Trusty
     - os: linux
       dist: bionic
-script: autoreconf -iv && ./configure && make && make install
+      env:
+      - BUILD_HOST_PARAMS=""
+      - PREFIX="/usr"
+script:
+  - autoreconf -iv
+  - ./configure --prefix=${PREFIX} ${BUILD_HOST_PARAMS}
+  - make
+  - sudo make install
