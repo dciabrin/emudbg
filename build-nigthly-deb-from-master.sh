@@ -25,7 +25,7 @@ BUILD_INFO=${DISTRIB}.1
 DEB_VERSION=${TARBALL_VERSION}-${BUILD_INFO}
 
 dch -D ${DISTRIB} -v ${DEB_VERSION} -U "Nightly build from tag ${LONGHASH}"
-git archive --format=tar --prefix=${PROJECT}-${TARBALL_VERSION}/ master | gzip -c > ${PROJECT}_${TARBALL_VERSION}.orig.tar.gz
+git archive --format=tar --prefix=${PROJECT}-${TARBALL_VERSION}/ master | gzip -nc > ${PROJECT}_${TARBALL_VERSION}.orig.tar.gz
 tar xf ${PROJECT}_${TARBALL_VERSION}.orig.tar.gz
 cd ${PROJECT}-${TARBALL_VERSION}
 cp -a ../debian .
