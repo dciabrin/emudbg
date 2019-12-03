@@ -1,0 +1,26 @@
+language: c
+dist: bionic
+matrix:
+  include:
+    - name: "Linux"
+      os: linux
+      dist: bionic
+      env:
+      - BUILD_HOST_PARAMS=""
+      - PREFIX="/usr"
+    - name: "Windows cross-compiled"
+      os: linux
+      dist: bionic
+      addons:
+        apt:
+          packages:
+            - mingw-w64
+      env:
+      - BUILD_HOST_PARAMS="--host=x86_64-w64-mingw32"
+      - PREFIX="/usr"
+
+script:
+  - autoreconf -iv
+  - ./configure --prefix=${PREFIX} ${BUILD_HOST_PARAMS}
+  - make
+  - sudo make install
