@@ -1,16 +1,21 @@
 language: c
+os: linux
 dist: bionic
-matrix:
+
+script:
+  - autoreconf -iv
+  - ./configure --prefix=${PREFIX} ${BUILD_HOST_PARAMS}
+  - make
+  - sudo make install
+
+jobs:
   include:
-    - name: "Linux"
-      os: linux
-      dist: bionic
+    - stage: Tests
+      name: "Linux"
       env:
       - BUILD_HOST_PARAMS=""
       - PREFIX="/usr"
     - name: "Windows cross-compiled"
-      os: linux
-      dist: bionic
       addons:
         apt:
           packages:
@@ -19,16 +24,14 @@ matrix:
       - BUILD_HOST_PARAMS="--host=x86_64-w64-mingw32"
       - PREFIX="/usr"
 
-script:
-  - autoreconf -iv
-  - ./configure --prefix=${PREFIX} ${BUILD_HOST_PARAMS}
-  - make
-  - sudo make install
-
-deploy:
-  provider: launchpad
-  slug: "~dciabrin/ngdevkit/+git/emudbg"
-  oauth_token:
-    secure: V1SwGDzk3e1vM7ZceFXW+TjLbalURVtPTLciJYAA/0WgH7zA+SnJ02xP3QejFtnBrDBnnyB48f3V17yyjYzmw9NrDYf11woRy+Ehy3dErb99AcXAFZepl+ez0tdnllOeTVmqZpLzI1Megtn19qNOUHaszojgYBXMBwSSMrD8FsD6JNd/ocIirTrbiX8nDf+Lpuq34W2Bqw4kaZXjCuQYDIeO+CRIFYiYzYYrjStF4gaHPi0rK8dGWO1LWiNC0e464mWXWlyyVDnZmwva6OQi1ZrnXB/Z5i/AJ97eSwaGM2RyL5zopRRaKGz8KElcJHq6uCz4RCvVw6GTTg4ZRQO5t2U//rLuBdZ30xHOjs7WpGfMdYLK+tN2rgK1o+KVP4ltnUC337g62dBlmPj9iHMyzrD5jIgxST8HklRTMLVaEUlI4DLT+jYSerJQBZ9zRBpoXCnRcvOre9rtQDtn+Q0uYHds9jgj1POJBUjdy/dktwOMqhonX7dSgCgVWB73zKTiC+XLXVHaUrfTsV4JIHpa4uxk31Em2aUCykM/AV65SWXqn7lCU0NeENAEALi3EbJ2Va8oVWd3ilsvBaNxw5bgIMw1GMb+ff7rMfsnGItRMziU1oj5sYTAPvMdWUrtQAR3TA6NuOIgi5F++i6SrhHDpad+WiElfIBcTANP7rK41MY=
-  oauth_token_secret:
-    secure: dkMIJbOJ3qUTDUWT/yOKUwSxmyjksKnWpA+GnGATAS68ycc6TmpTC+xn1WNPsQidatn+EdoebdnhpP76DeTqdix32KQ8MyFuWVeS4+ScOkE0F7125oMIrMX711QmtcxBXzyBp/95KAP+YPnIbpbqeMgxSntULCU+Xi4nr2E3EO6ExnfcF4YGiybyrqnY7tsnJD2MKoLOOGSPO7gUM4w/hKxUZZrKTQy5vDgYEDMBk0lMN2AbS5MyW1v72tmS52LlFi2jv/GMixENvtS7d/Fnjet/YTdq7meINW1AEqjUYnhGBMs8pWKdMDiXO7NOSFQvuBmAG9wQgylOM2dYDwsUgrxrj6437gBp9P7go1V/rc/OJXe5XkybUWt2ZwdmHWEQ7fh/YhAc50akGW3C51byXPT+mdB4v7PaNlwlGAuzCkmqqFNjEdw2e0/Ar4x5U3ozz7ocZXyJIRvew0s5VeAta1vzANhcEz2He6QCf8TXneL/egU30tqLqh4M4gO+z7QsYxL3zrIzxbw1hlm51tXPzK4oH2fPtzXX5x8S5W0xtu7yVpiERU/3yTJ6Wng1Pi9VI2JLQELeyO/EauvVevbQDOjZ+LBnwXVmfJOO0tNAqDA6ZQhhT5GblU1Ev7caQg2j+/YqQ/2r7LfqHz7xkaWoa1Vil7F4UElF0UfkXKvypf4=
+    - stage: Daily packages
+      if: branch = master
+      name: Launchpad - deb
+      script: skip
+      deploy:
+        provider: launchpad
+        slug: "~dciabrin/ngdevkit/+git/emudbg"
+        oauth_token:
+          secure: "FTGsMtq7gANj2ATcKaT6/onkJqHcjM+eSUt1c8jLCKE8yfslrfvjonFZLQVrnI2ObaRigFd1rIHbnqAddVHm/ujmrxtvBJD7MOl275jNWrWJ8ghB9smyOiea220YLH5V7lcbM/ZjK3Ic7g8gerRuCoC+7teoLV47QaNThgRB8NrQabH49m8nXlQc/rQDvI7pwFe8kvPbSX1Vqz3gk4Uxt9+/PqvYK5F8EHYXtL3xraeThZiwN0LrGNeWhGAX5iPfkCvfJvL2xzgXEgwxqPH6KnWCQtsHMfLSSFoVXjKA5dOzK0M32uTgCbTRDZli4Hx64o1w+27peX5RHPyrxTvPhcgZq4SRKTuSSnxtm+0ne3343/mExliWy4a2hec/Qx6ma2E7I1hBEX9UBZYCKde6AJx4K9Z6d4IgV6hM/nvAMb+12nr37X2noNr4OzRCjzxf2zLfNMvnFI8HNUvk9kV7PiGv8sND6QB8FtdHkyqN/X55GFnfcg0YvL5/zK9FylUDwQVzMlTGj0Zx0CBE+lho/AYv451JnCkYj2+aQWGrzXC/a+Q4CMAp3yzQfpQyqnyRuD7O+Y5C442kdHyFPzgavrQJvVkMMUnbCuXsN9WuFQhLoloFm+1mRwHDvhPcZksgoBunPqV+Rm+SM6jpvbt+GPCpM6whhnl1ZoM9ldTzCLQ="
+        oauth_token_secret:
+          secure: "pdqOR3oZbsHsargcs0e+hyUhQzSjqAhiOrkPnua7iCWRjrBtSHb+OCYIzmnLdnSKoT/7+VRMXUG3h572bzsJEMpPJx5vPtbN1oenhAOtfoZP3bjzggiWeQmh+eNl7BleNuepoKdAOR4tIGLCdYJTmt6FMKgr6pXKprR4Yp2YVtEUDMcF1frHmrrXt5UfKY7h7vIp4ioIjo2aZ2EGN619dO400UCI9skDEUqrfV+bXqz8HBflI0zwiXCUMnZIAca4PZ78h9yQuOdzALHtUK3sg0124kFWtntrFBw2pOcN1E8SjtlnX+23l2M2S8d4AfbB3BuEHnFGcPuSWXuVVu6ds/jupA9TJun7fHuU668ZDEytVa8oVomIrfJEEKfh60OJlpOdUAXfpfGsAXmepP2l2YcOLleXKWfxLOlqXGIFSDH3alzQn4bXaKQj6WFz34wjImyNB42e6bo4z+ABUUDRJN4RSGMb8rjVfbno5Wz4gc8p/w0YC0A5Br7Uvvh8xjY+ViKTKyiSK3ZA+PSDGUkrkjbqIidF/toS8OYPLeEDnLLpOf0ImI4BdS3aepV0fNeDlmOv1MpmHB4nuhkEDJ7cgFs/tPeZE2mtxz9TYPn07S++ubvrrmWsIaBi3sy9yNy5hxZEZmMIhAP3LmO4DoJ/LhEcp7W6O/f0L18fZ6IQ03g="
