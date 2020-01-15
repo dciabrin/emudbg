@@ -1,27 +1,27 @@
-Source: emudbg
+Source: emudbg-mingw-w64
 Priority: optional
 Maintainer: Damien Ciabrini <damien.ciabrini@gmail.com>
-Build-Depends: debhelper (>= 10), pkg-config
+Build-Depends: debhelper (>= 10), pkg-config, gcc-mingw-w64
 Standards-Version: 4.1.2
 Section: libs
 Homepage: https://github.com/dciabrin/emudbg
 Vcs-Git: https://github.com/dciabrin/emudbg.git
 
-Package: emudbg-dev
+Package: emudbg-mingw-w64-dev
 Section: libdevel
 Architecture: amd64
-Multi-Arch: same
-Depends: emudbg (= ${binary:Version}), ${misc:Depends}
-Description: emulator-agnostic source-level debugging API
+Multi-Arch: foreign
+Depends: emudbg-mingw-w64 (= ${binary:Version}), ${misc:Depends}
+Description: emulator-agnostic source-level debugging API - Windows development files
  emudbg defines a simple debugging API that can be implemented by
  emulators to expose simple step-by-step execution and memory
  inspection capabilities over a standard GDB remote serial protocol
 
-Package: emudbg
+Package: emudbg-mingw-w64
 Architecture: amd64
-Multi-Arch: same
+Multi-Arch: foreign
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: emulator-agnostic source-level debugging API
+Description: emulator-agnostic source-level debugging API - Windows runtime
  emudbg defines a simple debugging API that can be implemented by
  emulators to expose simple step-by-step execution and memory
  inspection capabilities over a standard GDB remote serial protocol

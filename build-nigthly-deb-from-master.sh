@@ -16,7 +16,7 @@ if [ -f "${PUBKEY_FILE}" ]; then
     gpg --import ${PUBKEY_FILE}
 fi
 
-PROJECT=$(basename $(pwd))
+PROJECT=$(basename $(pwd))-mingw-w64
 UPSTREAM_VERSION=$(git grep AC_INIT master:configure.ac | sed -ne 's/.*\[\(.*\)\].*/\1/p')
 read DATE SHORTHASH LONGHASH <<<$(git log -1 --date=format:"%Y%m%d%H%M" --pretty=format:"%cd %h %H" master)
 UPSTREAM_HASH=${DATE}.${SHORTHASH}
