@@ -12,8 +12,9 @@
 # package maintainers to append LDFLAGS
 #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
-# mingw linker doesn't understand "-z relro"
-export DEB_BUILD_MAINT_OPTIONS = hardening=-relro
+# mingw linker doesn't understand "-z relro" and
+# doesn't come with stack protection either
+export DEB_BUILD_MAINT_OPTIONS = hardening=-relro,-stackprotector
 
 %:
 	dh $@
