@@ -37,6 +37,10 @@
 #define DBG(x, ...)
 #endif
 
+int process_packet(struct emudbg_ctx_t*);
+int process_v_packet(struct emudbg_ctx_t*);
+
+
 int check_packet(char *pkt_start, char *pkt_end)
 {
     // TODO
@@ -301,11 +305,23 @@ int process_packet(struct emudbg_ctx_t *ctx)
         return process_z(ctx);
     } else if (STARTS_WITH(ctx->pkt_start, "s")) {
         return process_s(ctx);
-    } else if (STARTS_WITH(ctx->pkt_start, "vCont;")) {
-        return process_vCont(ctx);
+    } else if (STARTS_WITH(ctx->pkt_start, "v")) {
+        return process_v_packet(ctx);
     } else {
         ctx->send_data[0]='+';
         return 1;
+    }
+}
+
+/// v commands dispatcher
+int process_v_packet(struct emudbg_ctx_t *ctx)
+{
+    if (STARTS_WITH(ctx->pkt_start, "vCont;")) {
+        return process_vCont(ctx);
+    } else {
+        // per GDB manual: "The correct reply to an unknown
+        // ‘v’ packet is to return the empty string"
+        return make_packet(ctx, "");
     }
 }
 
