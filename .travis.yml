@@ -32,7 +32,7 @@ jobs:
       - PREFIX="/usr"
 
     - stage: Daily packages
-      if: branch = master
+      if: type = push AND branch = master
       name: Launchpad - deb
       script: skip
       deploy:
@@ -44,7 +44,7 @@ jobs:
           secure: "TjIEjjnhRtNc7R5T70m4VWg1mxtYJ47NhQYP41BxVfpym5pSCupRcyRUaoWjSEDy8D3J/dxvJLqWwuDd6ZY/bzqy4yXdwtG25khFP/2PIVTeKSLmXG8dPfFrEBslOlNMx0QGkwrb8ZVczaqiMDWxJ4KMGXkY16gEyKNTuuyl/nXyXIpiAp/I+X2RCOKf6WIm0oqoyVT8V8xOkNxHFge+/jL+Xt9fZcjpFvM7oRuJTCA4UqS6uqJyt0fjyfvLCXJ4g9BmkytlWxQe73FXbJVieTeMqRl+M4W/PaVTwG0cPbghHtwG0mOCjnQreMK7P8IgX6To0ermCF/1UDz5TpWcGMbhUGSOiw1L+65G40JJOQeb5po9crLXMRLEyPDRIpry4hZjweiwqU9oVCjLy/01C9qZ6uKl2b2VhgtT02Zb+BChh1xMthHvWF6fFvCwVUKe3kcH8OwkfPx1+IZtqBv0WgE2x8/2vGurj8wn2b4offeziEm1RLs3dhmINpCJkVRxDqTFypiEVw/wOyie+zQNywqibXH2Ka4+oFS5ldWnOFQ9C72bf0SrluW0mh0YuDyIVApBApK4ZLjJK3NlSmFV1MTtM+/ZGIOJ/XLEM5JxyqxayPzTlx7WBMyepFSxHXxu7PPTGiyySe1wNrvdWOoDMicynCci36HVyMJjMDiOvn8="
 
     - name: Homebrew - bottle
-      if: branch = master
+      if: type = push AND branch = master
       script:
         - git config --global user.name 'CI build bot'
         - git config --global user.email '<>'
