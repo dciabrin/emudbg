@@ -51,3 +51,12 @@ jobs:
         - git config --global url."https://api@github.com/".insteadOf "https://github.com/"
         - git clone https://github.com/dciabrin/homebrew-ngdevkit .travis/homebrew-ngdevkit
         - .travis/homebrew-ngdevkit/.travis/bump-project-nightly-build.sh emudbg
+
+    - stage: Post-deploy
+      name: Clean up old nightly tags
+      addons:
+        apt:
+          packages:
+            - jq
+      script: .travis/gc-nightly-tags.sh --tag-regex='^refs/tags/nightly-[0-9]*'
+      if: type = push AND branch = master
