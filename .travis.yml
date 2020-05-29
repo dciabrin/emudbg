@@ -30,6 +30,12 @@ jobs:
       env:
       - BUILD_HOST_PARAMS="--host=x86_64-w64-mingw32"
       - PREFIX="/usr"
+    - name: "macOS"
+      os: osx
+      osx_image: xcode11.4
+      env:
+      - BUILD_HOST_PARAMS=""
+      - PREFIX="/usr/local"
 
     - stage: Daily packages
       if: type = push AND branch = master
