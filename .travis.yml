@@ -19,9 +19,15 @@ jobs:
   include:
     - stage: Tests
       name: "Linux"
+      dist: focal
+      compiler: gcc-10
       env:
       - BUILD_HOST_PARAMS=""
       - PREFIX="/usr"
+      addons:
+        apt:
+          packages:
+            - gcc-10
     - name: "Windows cross-compiled"
       addons:
         apt:
