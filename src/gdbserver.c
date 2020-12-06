@@ -48,13 +48,13 @@ int check_packet(char *pkt_start, char *pkt_end)
 }
 
 ///
-int make_packet(struct emudbg_ctx_t *ctx, unsigned char* msg)
+int make_packet(struct emudbg_ctx_t *ctx, char* msg)
 {
     unsigned char chksum = 0;
     char *out = ctx->send_data;
     *out++ = '$';
     while (*msg != 0) {
-        chksum=(chksum+*msg)&0xff;
+        chksum=(chksum+((unsigned char)*msg))&0xff;
         *out++ = *msg++;
     }
     int written = snprintf(out, 4, "#%02x", chksum);
