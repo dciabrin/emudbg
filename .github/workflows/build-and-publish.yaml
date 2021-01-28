@@ -1,0 +1,76 @@
+name: Build and publish nightly
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  # linux:
+  #   name: Linux
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     BUILD_HOST_PARAMS: ""
+  #     PREFIX: "/usr"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Build
+  #       run: ./.github/scripts/build.sh
+
+  # win:
+  #   name: Windows cross-compiled
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     BUILD_HOST_PARAMS: "--host=x86_64-w64-mingw32"
+  #     PREFIX: "/usr"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Dependencies
+  #       run: sudo apt-get install mingw-w64
+
+  #     - name: Build
+  #       run: ./.github/scripts/build.sh
+
+  # macos:
+  #   name: macOS
+  #   runs-on: macos-latest
+  #   env:
+  #     BUILD_HOST_PARAMS: ""
+  #     PREFIX: "/usr/local"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: Dependencies
+  #       run: brew install automake
+
+  #     - name: Build
+  #       run: ./.github/scripts/build.sh
+
+  deploy:
+    name: Deploy
+    # needs: [linux, win, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Launchpad: trigger nightly deb rebuild"
+        run: .ci/trigger-launchpad-build.sh --slug="~dciabrin/ngdevkit/+git/emudbg" --name="Travis%20Deploy"
+        env:
+          LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
+          LAUNCHPAD_TOKEN_SECRET: ${{ secrets.LAUNCHPAD_TOKEN_SECRET }}
+
+      - name: "Brew: push new nightly revision and bottle"
+        run: |
+          git config --global user.name 'CI build bot'
+          git config --global user.email '<>'
+          git config --global url."https://api@github.com/".insteadOf "https://github.com/"
+          git clone https://github.com/dciabrin/homebrew-ngdevkit .ci/homebrew-ngdevkit
+          .ci/homebrew-ngdevkit/.ci/bump-project-nightly-build.sh emudbg
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
