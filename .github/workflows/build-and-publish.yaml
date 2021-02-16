@@ -4,54 +4,54 @@ on:
     branches:
       - 'master'
 jobs:
-  # linux:
-  #   name: Linux
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     BUILD_HOST_PARAMS: ""
-  #     PREFIX: "/usr"
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    env:
+      BUILD_HOST_PARAMS: ""
+      PREFIX: "/usr"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Build
-  #       run: ./.github/scripts/build.sh
+      - name: Build
+        run: ./.github/scripts/build.sh
 
-  # win:
-  #   name: Windows cross-compiled
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     BUILD_HOST_PARAMS: "--host=x86_64-w64-mingw32"
-  #     PREFIX: "/usr"
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  win:
+    name: Windows cross-compiled
+    runs-on: ubuntu-latest
+    env:
+      BUILD_HOST_PARAMS: "--host=x86_64-w64-mingw32"
+      PREFIX: "/usr"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Dependencies
-  #       run: sudo apt-get install mingw-w64
+      - name: Dependencies
+        run: sudo apt-get install mingw-w64
 
-  #     - name: Build
-  #       run: ./.github/scripts/build.sh
+      - name: Build
+        run: ./.github/scripts/build.sh
 
-  # macos:
-  #   name: macOS
-  #   runs-on: macos-latest
-  #   env:
-  #     BUILD_HOST_PARAMS: ""
-  #     PREFIX: "/usr/local"
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    env:
+      BUILD_HOST_PARAMS: ""
+      PREFIX: "/usr/local"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Dependencies
-  #       run: brew install automake
+      - name: Dependencies
+        run: brew install automake
 
-  #     - name: Build
-  #       run: ./.github/scripts/build.sh
+      - name: Build
+        run: ./.github/scripts/build.sh
 
   deploy:
     name: Deploy
-    # needs: [linux, win, macos]
+    needs: [linux, win, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
