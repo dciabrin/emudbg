@@ -9,7 +9,7 @@ set +x
 
 
 help() {
-    echo "Usage: $0 --repo={user}/{repo} --token={github-api-token} --tag-regex={str}" >&2
+    echo "Usage: $0 --user={user} --repo={repo} --token={github-api-token} --tag-regex={str}" >&2
     exit ${1:-0}
 }
 
@@ -26,8 +26,8 @@ check() {
 
 # ----------------- config parsing -----------------
 #
-USER=$(echo ${TRAVIS_REPO_SLUG:-} | cut -d'/' -f1)
-REPO=$(echo ${TRAVIS_REPO_SLUG:-} | cut -d'/' -f2)
+USER=
+REPO=
 GITHUB_TOKEN=${GH_TOKEN:-}
 TAG_REGEX=
 DRYRUN=
