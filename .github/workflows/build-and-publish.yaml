@@ -76,6 +76,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: "Cleanup old nightly tags"
-        run: .ci/gc-nightly-tags.sh --dry-run --user=dciabrin --repo=emudbg --tag-regex='^refs/tags/nightly/[0-9]*'
+        run: .ci/gc-nightly-tags.sh --dry-run --user=dciabrin --repo=emudbg --tag-regex='^refs/tags/nightly-[0-9]*'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
