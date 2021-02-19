@@ -1,6 +1,6 @@
 /*
  * emudbg - emulator-agnostic source level debugging API
- * Copyright (c) 2015-2018 Damien Ciabrini
+ * Copyright (c) 2015-2021 Damien Ciabrini
  * This file is part of ngdevkit
  *
  * ngdevkit is free software: you can redistribute it and/or modify
@@ -76,17 +76,21 @@ int emudbg_wait_for_client(void *emudbg_ctx)
     struct emudbg_ctx_t *ctx=(struct emudbg_ctx_t*)emudbg_ctx;
 
     struct sockaddr_in listen_addr;
-    int r=0;
+    int r;
     listen_addr.sin_family = AF_INET;
     listen_addr.sin_addr.s_addr = inet_addr(DEFAULT_HOST);
     listen_addr.sin_port = htons(DEFAULT_PORT);
 
     ctx->listen_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     r=bind(ctx->listen_socket, (struct sockaddr *)&listen_addr, sizeof(listen_addr));
+    // TODO: check return code
+    (void)r;
     // printf("BOUND SOCKET: %x - %d (errno: %d)\n", ctx->listen_socket, r, EMUDBG_SOCKET_ERRNO);
 
     // printf("LISTEN:\n");
     r=listen(ctx->listen_socket, SOMAXCONN);
+    // TODO: check return code
+    (void)r;
     // printf("LISTEN FINISHED: %d (errno: %d) - %d\n", r, EMUDBG_SOCKET_ERRNO, SOCKET_ERROR);
 
     struct sockaddr client_addr;
@@ -94,6 +98,7 @@ int emudbg_wait_for_client(void *emudbg_ctx)
     ctx->client_socket = accept(ctx->listen_socket, &client_addr, &addrlen);
     // printf("ACCEPTED CLIENT SOCKET: %x (errno: %d)\n", ctx->client_socket, EMUDBG_SOCKET_ERRNO);
 
+    return 0;
 }
 
 
@@ -123,9 +128,7 @@ void emudbg_disconnect_from_client(void *emudbg_ctx)
     struct emudbg_ctx_t *ctx=(struct emudbg_ctx_t*)emudbg_ctx;
 
     close(ctx->client_socket);
-    ctx->client_socket;
     close(ctx->listen_socket);
-    ctx->listen_socket;
 
     free(ctx);
 }

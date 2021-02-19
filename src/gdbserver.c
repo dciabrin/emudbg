@@ -1,6 +1,6 @@
 /*
  * emudbg - emulator-agnostic source level debugging API
- * Copyright (c) 2018 Damien Ciabrini
+ * Copyright (c) 2018-2021 Damien Ciabrini
  * This file is part of ngdevkit
  *
  * ngdevkit is free software: you can redistribute it and/or modify
@@ -360,6 +360,7 @@ int emudbg_gdb_server_loop(void *emudbg_ctx, int emu_suspended, struct emudbg_cm
 
         // TODO checksum and acknowledge packet
         int chk = check_packet(pos, ctx->data+len_recv);
+        (void)chk;
         send(ctx->client_socket, "+", 1, 0);
 
         // process command in packet
