@@ -5,7 +5,7 @@ on:
       - 'master'
 jobs:
   linux:
-    name: Linux
+    name: "Linux build"
     runs-on: ubuntu-latest
     env:
       BUILD_HOST_PARAMS: ""
@@ -18,7 +18,7 @@ jobs:
         run: ./.github/scripts/build.sh
 
   win:
-    name: Windows cross-compiled
+    name: "Windows cross-compiled build"
     runs-on: ubuntu-latest
     env:
       BUILD_HOST_PARAMS: "--host=x86_64-w64-mingw32"
@@ -34,7 +34,7 @@ jobs:
         run: ./.github/scripts/build.sh
 
   macos:
-    name: macOS
+    name: "macOS build"
     runs-on: macos-latest
     env:
       BUILD_HOST_PARAMS: ""
@@ -49,8 +49,22 @@ jobs:
       - name: Build
         run: ./.github/scripts/build.sh
 
-  deploy:
-    name: Deploy
+  deploy_deb:
+    name: "deb: trigger Launchpad rebuild"
+    needs: [linux, win, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Launchpad: trigger nightly deb rebuild"
+        run: .ci/trigger-launchpad-build.sh --slug="~dciabrin/ngdevkit/+git/emudbg" --name="Travis%20Deploy"
+        env:
+          LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
+          LAUNCHPAD_TOKEN_SECRET: ${{ secrets.LAUNCHPAD_TOKEN_SECRET }}
+
+  deploy_brew:
+    name: "brew: trigger bottle rebuild"
     needs: [linux, win, macos]
     runs-on: ubuntu-latest
     steps:
@@ -58,12 +72,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      - name: "Launchpad: trigger nightly deb rebuild"
-        run: .ci/trigger-launchpad-build.sh --slug="~dciabrin/ngdevkit/+git/emudbg" --name="Travis%20Deploy"
-        env:
-          LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
-          LAUNCHPAD_TOKEN_SECRET: ${{ secrets.LAUNCHPAD_TOKEN_SECRET }}
 
       - name: "Brew: push new nightly revision and bottle"
         run: |

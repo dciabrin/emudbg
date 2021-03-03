@@ -5,7 +5,7 @@ on:
       - 'master'
 jobs:
   linux:
-    name: Linux
+    name: "Linux build"
     runs-on: ubuntu-latest
     env:
       BUILD_HOST_PARAMS: ""
@@ -18,7 +18,7 @@ jobs:
         run: ./.github/scripts/build.sh
 
   win:
-    name: Windows cross-compiled
+    name: "Windows cross-compiled build"
     runs-on: ubuntu-latest
     env:
       BUILD_HOST_PARAMS: "--host=x86_64-w64-mingw32"
@@ -34,7 +34,7 @@ jobs:
         run: ./.github/scripts/build.sh
 
   macos:
-    name: macOS
+    name: "macOS build"
     runs-on: macos-latest
     env:
       BUILD_HOST_PARAMS: ""
