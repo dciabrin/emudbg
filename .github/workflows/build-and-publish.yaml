@@ -17,7 +17,7 @@ jobs:
       - name: Build
         run: ./.github/scripts/build.sh
 
-  win:
+  wincross:
     name: "Windows cross-compiled build"
     runs-on: ubuntu-latest
     env:
@@ -32,6 +32,35 @@ jobs:
 
       - name: Build
         run: ./.github/scripts/build.sh
+
+  win:
+    name: "Windows native MSYS2"
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install:
+            git autoconf automake make
+            mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config
+
+      - name: Add ngdevkit repos
+        run: |
+          echo -e "[ngdevkit]\nSigLevel = PackageOptional\nServer = https://dciabrin.net/msys2-ngdevkit/\$arch" >> /etc/pacman.conf
+          pacman -Sy
+
+      - name: Build
+        run: ./.github/scripts/build-msys2.sh
 
   macos:
     name: "macOS build"
@@ -51,7 +80,7 @@ jobs:
 
   deploy_deb:
     name: "deb: trigger Launchpad rebuild"
-    needs: [linux, win, macos]
+    needs: [linux, wincross, win, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -63,9 +92,29 @@ jobs:
           LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
           LAUNCHPAD_TOKEN_SECRET: ${{ secrets.LAUNCHPAD_TOKEN_SECRET }}
 
+  deploy_msys2:
+    name: "msys2: trigger package rebuild"
+    needs: [linux, wincross, win, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "MSYS2: push new nightly revision and bottle"
+        run: |
+          git config --global user.name 'CI build bot'
+          git config --global user.email '<>'
+          git config --global url."https://api@github.com/".insteadOf "https://github.com/"
+          git clone https://github.com/dciabrin/msys2-ngdevkit .ci/msys2-ngdevkit
+          .ci/homebrew-ngdevkit/.ci/bump-project-nightly-build.sh emudbg
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
   deploy_brew:
     name: "brew: trigger bottle rebuild"
-    needs: [linux, win, macos]
+    needs: [linux, wincross, win, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
