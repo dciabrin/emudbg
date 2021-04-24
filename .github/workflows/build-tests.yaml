@@ -17,8 +17,8 @@ jobs:
       - name: Build
         run: ./.github/scripts/build.sh
 
-  win:
-    name: "Windows cross-compiled build"
+  wincc:
+    name: "Windows cross-compiled Linux/MinGW"
     runs-on: ubuntu-latest
     env:
       BUILD_HOST_PARAMS: "--host=x86_64-w64-mingw32"
@@ -32,6 +32,35 @@ jobs:
 
       - name: Build
         run: ./.github/scripts/build.sh
+
+  win:
+    name: "Windows native MSYS2"
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install:
+            git autoconf automake make
+            mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config
+
+      - name: Add ngdevkit repos
+        run: |
+          echo -e "[ngdevkit]\nSigLevel = PackageOptional\nServer = https://dciabrin.net/msys2-ngdevkit/\$arch" >> /etc/pacman.conf
+          pacman -Sy
+
+      - name: Build
+        run: ./.github/scripts/build-msys2.sh
 
   macos:
     name: "macOS build"
