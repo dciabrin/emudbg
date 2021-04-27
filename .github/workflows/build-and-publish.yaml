@@ -56,7 +56,7 @@ jobs:
 
       - name: Add ngdevkit repos
         run: |
-          echo -e "[ngdevkit]\nSigLevel = PackageOptional\nServer = https://dciabrin.net/msys2-ngdevkit/\$arch" >> /etc/pacman.conf
+          echo -e "[ngdevkit]\nSigLevel = Optional TrustAll\nServer = https://dciabrin.net/msys2-ngdevkit/\$arch" >> /etc/pacman.conf
           pacman -Sy
 
       - name: Build
