@@ -102,7 +102,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "MSYS2: push new nightly revision and bottle"
+      - name: "MSYS2: push new nightly revision and rebuild package repository"
         run: |
           git config --global user.name 'CI build bot'
           git config --global user.email '<>'
@@ -132,7 +132,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: "Cleanup old nightly tags"
+  post_cleanup:
+    name: "Repository cleanup"
+    needs: [deploy_deb, deploy_msys2, deploy_brew]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Clean up old nightly tags"
         run: .ci/gc-nightly-tags.sh --user=dciabrin --repo=emudbg --tag-regex='^refs/tags/nightly-[0-9]*'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
