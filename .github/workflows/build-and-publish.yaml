@@ -108,7 +108,7 @@ jobs:
           git config --global user.email '<>'
           git config --global url."https://api@github.com/".insteadOf "https://github.com/"
           git clone https://github.com/dciabrin/msys2-ngdevkit .ci/msys2-ngdevkit
-          .ci/homebrew-ngdevkit/.ci/bump-project-nightly-build.sh emudbg
+          .ci/msys2-ngdevkit/.ci/bump-project-nightly-build.sh emudbg
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
