@@ -92,6 +92,30 @@ jobs:
           LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
           LAUNCHPAD_TOKEN_SECRET: ${{ secrets.LAUNCHPAD_TOKEN_SECRET }}
 
+  deploy_copr:
+    name: "rpm: trigger COPR rebuild"
+    needs: [linux, wincross, win, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "COPR: push new nightly revision"
+        run:  |
+          git config --global user.name 'CI build bot'
+          git config --global user.email '<>'
+          git config --global url."https://api@github.com/".insteadOf "https://github.com/"
+          git clone https://github.com/dciabrin/copr-ngdevkit .ci/copr-ngdevkit
+          .ci/copr-ngdevkit/.ci/bump-project-nightly-build.sh emudbg
+          .ci/copr-ngdevkit/.ci/trigger-copr-build.sh --package emudbg
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          COPR_SECRET: ${{ secrets.COPR_SECRET }}
+          LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
+          LAUNCHPAD_TOKEN_SECRET: ${{ secrets.LAUNCHPAD_TOKEN_SECRET }}
+
   deploy_msys2:
     name: "msys2: trigger package rebuild"
     needs: [linux, wincross, win, macos]
