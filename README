@@ -1,5 +1,5 @@
 emudbg - emulator-agnostic source-level debugging API
-Copyright (c) 2015-2019 Damien Ciabrini
+Copyright (c) 2015-2021 Damien Ciabrini
 
 emudbg defines a simple debugging API that can be implemented by
 emulators to expose simple step-by-step execution and memory
