@@ -17,22 +17,6 @@ jobs:
       - name: Build
         run: ./.github/scripts/build.sh
 
-  wincross:
-    name: "Windows cross-compiled build"
-    runs-on: ubuntu-latest
-    env:
-      BUILD_HOST_PARAMS: "--host=x86_64-w64-mingw32"
-      PREFIX: "/usr"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Dependencies
-        run: sudo apt-get install mingw-w64
-
-      - name: Build
-        run: ./.github/scripts/build.sh
-
   win:
     name: "Windows native MSYS2"
     runs-on: windows-latest
@@ -48,11 +32,11 @@ jobs:
       - name: Install MSYS2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: UCRT64
           update: true
           install:
             git autoconf automake make
-            mingw-w64-x86_64-gcc mingw-w64-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkgconf
 
       - name: Add ngdevkit repos
         run: |
@@ -80,7 +64,7 @@ jobs:
 
   deploy_deb:
     name: "deb: trigger Launchpad rebuild"
-    needs: [linux, wincross, win, macos]
+    needs: [linux, win, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -94,7 +78,7 @@ jobs:
 
   deploy_rpm:
     name: "rpm: trigger COPR rebuild"
-    needs: [linux, wincross, win, macos]
+    needs: [linux, win, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -118,7 +102,7 @@ jobs:
 
   deploy_msys2:
     name: "msys2: trigger package rebuild"
-    needs: [linux, wincross, win, macos]
+    needs: [linux, win, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -132,13 +116,13 @@ jobs:
           git config --global user.email '<>'
           git config --global url."https://api@github.com/".insteadOf "https://github.com/"
           git clone https://github.com/dciabrin/msys2-ngdevkit .ci/msys2-ngdevkit
-          .ci/msys2-ngdevkit/.ci/bump-project-nightly-build.sh emudbg
+          .ci/msys2-ngdevkit/.ci/bump-project-nightly-build.sh --package emudbg --batch
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   deploy_brew:
     name: "brew: trigger bottle rebuild"
-    needs: [linux, wincross, win, macos]
+    needs: [linux, win, macos]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
