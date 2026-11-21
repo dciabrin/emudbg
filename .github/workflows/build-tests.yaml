@@ -1,8 +1,14 @@
 name: Build and Test
+
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - "ci/**"
+  pull_request:
     branches-ignore:
-      - 'master'
+      - "ci/**"
+
 jobs:
   linux:
     name: "Linux build"
@@ -48,7 +54,7 @@ jobs:
 
   macos:
     name: "macOS build"
-    runs-on: macos-latest
+    runs-on: xcode-27
     env:
       BUILD_HOST_PARAMS: ""
       PREFIX: "/usr/local"
