@@ -48,7 +48,7 @@ jobs:
 
   macos:
     name: "macOS build"
-    runs-on: macos-latest
+    runs-on: xcode-27
     env:
       BUILD_HOST_PARAMS: ""
       PREFIX: "/usr/local"
